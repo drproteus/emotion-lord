@@ -7,9 +7,9 @@ class MoodRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MoodRecord
         fields = ["user", "score", "description", "created_at", "updated_at"]
-    
-class MoodRecordViewSet(viewsets.ModelViewSet):
 
+
+class MoodRecordViewSet(viewsets.ModelViewSet):
     def list(self, request):
         queryset = request.current_user.moodrecord_set.all()
         serializer = MoodRecordSerializer(queryset, many=True)

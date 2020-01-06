@@ -56,19 +56,13 @@ def test_serializer_validation():
     kirkman = UserFactory()
 
     # Decimal value is invalid
-    ser = MoodRecordSerializer(data={
-        "score": 5.666, "user": kirkman
-    })
+    ser = MoodRecordSerializer(data={"score": 5.666, "user": kirkman})
     assert not ser.is_valid()
 
     # Score lower than min is invalid
-    ser = MoodRecordSerializer(data={
-        "score": MIN_SCORE - 1, "user": kirkman
-    })
+    ser = MoodRecordSerializer(data={"score": MIN_SCORE - 1, "user": kirkman})
     assert not ser.is_valid()
 
     # Score greater than max is invalid
-    ser = MoodRecordSerializer(data={
-        "score": MAX_SCORE + 1, "user": kirkman
-    })
+    ser = MoodRecordSerializer(data={"score": MAX_SCORE + 1, "user": kirkman})
     assert not ser.is_valid()
