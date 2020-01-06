@@ -9,6 +9,8 @@ import factory.django
 from tracker.models import MoodRecord
 from tracker.models import MIN_SCORE, MAX_SCORE
 
+from tracker.views import MoodRecordSerializer
+
 pytestmark = pytest.mark.django_db
 
 
@@ -16,7 +18,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = "chris"
+    username = "kirkman"
 
 
 def test_can_create_moodrecord():
@@ -47,3 +49,26 @@ def test_relationships():
 
     kirkman.moodrecord_set.add(MoodRecord(score=10), bulk=False)
     assert kirkman.moodrecord_set.first().score == 10
+
+
+def test_serializer_validation():
+    # make a user
+    kirkman = UserFactory()
+
+    # Decimal value is invalid
+    ser = MoodRecordSerializer(data={
+        "score": 5.666, "user": kirkman
+    })
+    assert not ser.is_valid()
+
+    # Score lower than min is invalid
+    ser = MoodRecordSerializer(data={
+        "score": MIN_SCORE - 1, "user": kirkman
+    })
+    assert not ser.is_valid()
+
+    # Score greater than max is invalid
+    ser = MoodRecordSerializer(data={
+        "score": MAX_SCORE + 1, "user": kirkman
+    })
+    assert not ser.is_valid()
