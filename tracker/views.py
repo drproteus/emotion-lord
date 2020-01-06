@@ -25,6 +25,6 @@ class ProfileView(View):
         if not request.user:
             raise Http404
         records = request.user.moodrecord_set.all()
-        return render(request, "profile.html", context={
-            "records": records, "user": request.user
-        })
+        return render(
+            request, "profile.html", context={"records": records, "user": request.user}
+        )
