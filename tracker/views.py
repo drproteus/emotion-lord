@@ -1,4 +1,7 @@
 from tracker.models import MoodRecord
+from django.views.generic import View
+from django.urls.exceptions import Http404
+from django.shortcuts import render
 from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 
@@ -10,16 +13,18 @@ class MoodRecordSerializer(serializers.ModelSerializer):
 
 
 class MoodRecordViewSet(viewsets.ModelViewSet):
-    def list(self, request):
-        queryset = request.current_user.moodrecord_set.all()
-        serializer = MoodRecordSerializer(queryset, many=True)
-        return Response(serializer.data)
+    serializer_class = MoodRecordSerializer
 
-    def retrieve(self, request, pk=None):
-        queryset = request.current_user.moodrecord_set.all()
-        try:
-            record = queryset.get()
-        except MoodRecord.DoesNotExist:
-            return Response({"message": "Not found."}, status=404)
-        serializer = MoodRecordSerializer(record)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        return user.moodrecord_set.all()
+
+
+class ProfileView(View):
+    def get(self, request):
+        if not request.user:
+            raise Http404
+        records = request.user.moodrecord_set.all()
+        return render(request, "profile.html", context={
+            "records": records, "user": request.user
+        })

@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h4>Hey, {{ user.username }}.</h4>
+
+{% if records %}Records:
+<ul>{% for record in records %}
+    <li>{{ record.created_at }}, score: {{ record.score }}</li>
+{% endfor %}</ul>
+{% else %}No records!{% endif %}
+
+{% endblock %}
