@@ -9,7 +9,12 @@ from rest_framework.response import Response
 class MoodRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MoodRecord
-        fields = ["user", "score", "description", "created_at", "updated_at"]
+        fields = ["id", "user", "score", "description", "created_at", "updated_at"]
+        read_only_fields = (
+            "id",
+            "user",
+            "created_at",
+        )
 
 
 class MoodRecordViewSet(viewsets.ModelViewSet):
