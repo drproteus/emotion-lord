@@ -10,9 +10,8 @@ MAX_SCORE = 10
 
 def validate_score(value):
     if not MIN_SCORE <= value <= MAX_SCORE:
-        raise ValidationError(
-            _("%(value)s is not between %(min_score)s and %(max_score)s"),
-            params={"value": value, "min_score": MIN_SCORE, "max_score": MAX_SCORE,},
+        raise ValidationError("{value} is not between {mns} and {mxs}".format(
+            value=value, mns=MIN_SCORE, mxs=MAX_SCORE),
         )
 
 
