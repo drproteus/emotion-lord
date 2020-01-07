@@ -1,15 +1,17 @@
 import json
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
 from django.urls.exceptions import Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.contrib.auth import authenticate, login
 from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 from twilio.twiml.messaging_response import MessagingResponse
 
 from tracker.models import MoodRecord, UserProfile
+from tracker.forms import RegistrationForm
 
 
 class MoodRecordSerializer(serializers.ModelSerializer):
@@ -33,8 +35,8 @@ class MoodRecordViewSet(viewsets.ModelViewSet):
 
 class ProfileView(View):
     def get(self, request):
-        if not request.user:
-            raise Http404
+        if not request.user.is_authenticated:
+            return redirect("/accounts/register/")
         records = request.user.moodrecord_set.all()
         return render(
             request, "profile.html", context={"records": records, "user": request.user}
@@ -71,3 +73,30 @@ def receive_record_sms(request):
         )
 
     return HttpResponse(resp)
+
+
+class RegistrationView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("/accounts/profile/")
+        form = RegistrationForm()
+        return render(request, "registration/signup.html", context={"form": form})
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return JsonResponse({}, status=401)
+        form = RegistrationForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse(form.errors.get_json_data(), status=401, safe=False)
+        profile = form.save()
+        login(request, profile.user)
+        return JsonResponse(
+            {
+                "profile": {
+                    "email": profile.user.email,
+                    "profile_id": profile.id,
+                    "name": profile.name,
+                    "number": str(profile.number),
+                }
+            }
+        )

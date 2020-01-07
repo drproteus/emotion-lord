@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Register</h2>
+<form id="signup-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" id="register">Submit</button>
+</form>
+
+<script>
+$(document).ready(function() {
+    $("#signup-form").on("submit", function(event) {
+        event.preventDefault();
+        var serializedForm = $("#signup-form").serializeArray()
+        data = {}
+        for (var i = 0; i < serializedForm.length; i++) {
+            data[serializedForm[i]["name"]] = serializedForm[i]["value"];
+        };
+        $.ajax({
+            url: "/accounts/register/",
+            type: "POST",
+            data: data,
+            error: function(error) {
+                alert(error.responseText);
+                console.log(error.responseJSON);
+            },
+            success: function(data) {
+                window.location.href = "/accounts/profile/"
+            }
+        });
+        return false;
+    });
+});
+</script>
+
+{% endblock %}
