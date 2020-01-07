@@ -20,6 +20,21 @@ def validate_score(value):
 
 
 class MoodRecord(models.Model):
+    EMOJIS = [
+        "😫",
+        "😞",
+        "😓",
+        "😥",
+        "😟",
+        "🙁",
+        "😑"
+        "😐",
+        "🙂",
+        "😊",
+        "😀",
+        "😄",
+    ]
+
     id = models.CharField(default=uuid4, primary_key=True, max_length=256)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,6 +43,10 @@ class MoodRecord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(validators=[validate_score])
     description = models.TextField(max_length=500, blank=True)
+
+    @property
+    def emoji(self):
+        return self.EMOJIS[int(self.score)]
 
 
 class UserProfile(models.Model):

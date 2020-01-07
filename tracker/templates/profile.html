@@ -5,7 +5,7 @@
 
 {% if records %}Records:
 <ul>{% for record in records %}
-    <li>{{ record.created_at }}, score: {{ record.score }}</li>
+    <li>{{ record.created_at }}, score: {{ record.score }} {{ record.emoji }}</li>
 {% endfor %}</ul>
 {% else %}No records!{% endif %}
 
