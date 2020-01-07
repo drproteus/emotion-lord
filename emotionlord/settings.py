@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "phonenumber_field",
     "rest_framework",
     "tracker",
 ]
@@ -126,3 +127,6 @@ REST_FRAMEWORK = {
 }
 
 APPEND_SLASH = True
+
+TWILIO_NUMBER = "+19415484891"
+TWILIO_TOKEN = os.getenv("TWILIO_TOKEN", "")
