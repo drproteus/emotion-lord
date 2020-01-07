@@ -46,14 +46,14 @@ def receive_record_sms(request):
         profile = UserProfile.objects.get(number=request.POST.get("From", None))    
     except UserProfile.DoesNotExist:
         resp.message("No account exists for this phone number.")
-        return resp
+        return HttpResponse(resp)
     
     score = request.POST.get("Body", "").strip()
     try:
         score = int(score)
     except ValueError:
         resp.message("Please submit a single number between 0 and 10")
-        return resp
+        return HttpResponse(resp)
 
     try:
         record = MoodRecord(score=score, user=profile.user)
