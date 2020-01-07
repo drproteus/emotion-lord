@@ -45,7 +45,7 @@ class MoodRecord(models.Model):
     description = models.TextField(max_length=500, blank=True)
 
     @property
-    def emoji(self):
+    def icon(self):
         return self.EMOJIS[int(self.score)]
 
 
